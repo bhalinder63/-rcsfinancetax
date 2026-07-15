@@ -1,4 +1,5 @@
 import { CONTACT, NAV_LINKS, FOOTER_SERVICES } from '../data.js'
+import Reveal from './Reveal.jsx'
 import logoIcon from '../assets/rcslogoicon.png'
 import logoWordmark from '../assets/rcslogo.png'
 
@@ -7,7 +8,7 @@ export default function Footer() {
     <footer id="contact" className="border-t border-gold/25 bg-panel px-5 pt-10 md:px-12 md:pt-12 lg:px-[72px] lg:pt-14">
       <div className="mx-auto w-full max-w-[1440px]">
       <div className="grid gap-8 pb-12 md:grid-cols-2 md:gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
-        <div className="flex flex-col gap-4">
+        <Reveal className="flex flex-col gap-4">
           <div className="flex items-center gap-3">
             <img src={logoIcon} alt="RCS crest" width="490" height="512" loading="lazy" className="h-14 w-auto" />
             <img
@@ -23,9 +24,9 @@ export default function Footer() {
             Empowering individuals and businesses with reliable, efficient and result-driven
             financial solutions.
           </p>
-        </div>
+        </Reveal>
 
-        <div className="flex flex-col gap-3">
+        <Reveal delay={80} className="flex flex-col gap-3">
           <span className="mb-1.5 font-display text-[17px] font-bold tracking-[1px] text-gold-bright">
             Quick Links
           </span>
@@ -38,9 +39,9 @@ export default function Footer() {
               {link.label}
             </a>
           ))}
-        </div>
+        </Reveal>
 
-        <div className="flex flex-col gap-3">
+        <Reveal delay={160} className="flex flex-col gap-3">
           <span className="mb-1.5 font-display text-[17px] font-bold tracking-[1px] text-gold-bright">
             Our Services
           </span>
@@ -53,9 +54,9 @@ export default function Footer() {
               {name}
             </a>
           ))}
-        </div>
+        </Reveal>
 
-        <div className="flex flex-col gap-3.5">
+        <Reveal delay={240} className="flex flex-col gap-3.5">
           <span className="mb-1.5 font-display text-[17px] font-bold tracking-[1px] text-gold-bright">
             Contact Info
           </span>
@@ -74,7 +75,7 @@ export default function Footer() {
             {CONTACT.email}
           </a>
           <span className="text-[15px] text-muted">{CONTACT.website}</span>
-        </div>
+        </Reveal>
       </div>
 
       <div className="flex flex-col items-start gap-2.5 border-t border-gold/15 py-5 text-[13.5px] text-muted-3 md:flex-row md:items-center md:justify-between md:gap-x-6">

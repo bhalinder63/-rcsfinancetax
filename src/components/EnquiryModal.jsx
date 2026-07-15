@@ -48,9 +48,9 @@ export default function EnquiryModal({ open, onClose }) {
       aria-modal="true"
       aria-labelledby="enquiry-title"
       onClick={(e) => e.target === e.currentTarget && onClose()}
-      className="fixed inset-0 z-100 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-100 flex animate-[fade-in_.15s_ease-out_both] items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
     >
-      <div className="max-h-[90vh] w-full max-w-[520px] overflow-y-auto rounded-xl border border-gold/35 bg-linear-160 from-card to-panel p-6 shadow-[0_30px_80px_rgba(0,0,0,.7),inset_0_1px_0_rgba(212,175,55,.2)] md:p-9">
+      <div className="max-h-[90vh] w-full max-w-[520px] animate-[modal-in_.22s_.06s_ease-out_both] overflow-y-auto rounded-xl border border-gold/35 bg-linear-160 from-card to-panel p-6 shadow-[0_30px_80px_rgba(0,0,0,.7),inset_0_1px_0_rgba(212,175,55,.2)] md:p-9">
         <div className="mb-6 flex items-start justify-between gap-4">
           <div>
             <div className="mb-2 flex items-center gap-3">

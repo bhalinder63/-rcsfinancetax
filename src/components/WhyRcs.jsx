@@ -1,5 +1,6 @@
 import { REASONS } from '../data.js'
 import Button from './Button.jsx'
+import Reveal from './Reveal.jsx'
 
 export default function WhyRcs({ onEnquiry }) {
   return (
@@ -8,7 +9,7 @@ export default function WhyRcs({ onEnquiry }) {
       className="bg-night px-5 pb-14 md:px-12 md:pb-16 lg:px-[72px] lg:pb-20"
     >
       <div className="mx-auto grid w-full max-w-[1440px] gap-6 lg:grid-cols-[1.2fr_1fr]">
-      <div className="rounded-xl border border-gold/22 bg-panel px-6 py-[30px] md:px-11 md:py-[42px]">
+      <Reveal className="rounded-xl border border-gold/22 bg-panel px-6 py-[30px] md:px-11 md:py-[42px]">
         <h2 className="mb-[26px] font-display text-[32px] font-bold">
           <span className="text-ivory">Why Choose </span>
           <span className="text-gold-bright">RCS?</span>
@@ -23,9 +24,10 @@ export default function WhyRcs({ onEnquiry }) {
             </div>
           ))}
         </div>
-      </div>
+      </Reveal>
 
-      <div
+      <Reveal
+        delay={120}
         id="about"
         className="flex flex-col justify-center gap-4 rounded-xl border border-gold/45 bg-linear-150 from-[#191307] from-0% to-[#0d0a05] to-70% px-6 py-[30px] shadow-[inset_0_1px_0_rgba(212,175,55,.25)] md:px-11 md:py-[42px]"
       >
@@ -37,7 +39,7 @@ export default function WhyRcs({ onEnquiry }) {
         <Button size="lg" className="mt-1.5 self-start" onClick={onEnquiry}>
           Schedule a Meeting →
         </Button>
-      </div>
+      </Reveal>
       </div>
     </section>
   )

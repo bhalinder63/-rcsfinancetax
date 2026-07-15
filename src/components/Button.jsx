@@ -1,5 +1,5 @@
 const styles = {
-  gold: 'inline-block cursor-pointer rounded-md bg-linear-135 from-gold-soft to-gold-deep font-semibold tracking-[.6px] text-ink shadow-[0_4px_18px_rgba(212,175,55,.35)] transition-shadow duration-250 hover:shadow-[0_6px_24px_rgba(212,175,55,.55)]',
+  gold: 'btn-shimmer inline-block cursor-pointer rounded-md bg-linear-135 from-gold-soft to-gold-deep font-semibold tracking-[.6px] text-ink shadow-[0_4px_18px_rgba(212,175,55,.35)] transition-shadow duration-250 hover:shadow-[0_6px_24px_rgba(212,175,55,.55)]',
   outline:
     'inline-block cursor-pointer rounded-md border border-gold/55 font-medium tracking-[.5px] text-gold-bright transition-colors duration-250 hover:bg-gold/8 hover:text-gold-bright',
 }
