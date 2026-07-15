@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+/* ═══ RCS Finance & Tax Experts — dark luxury theme ═══ */
+
+@theme {
+  --color-night: #07090d;
+  --color-panel: #0b0e14;
+  --color-card: #0e1119;
+  --color-gold: #d4af37;
+  --color-gold-bright: #e3b94e;
+  --color-gold-light: #f5d061;
+  --color-gold-deep: #c99a2e;
+  --color-gold-soft: #f0cf6b;
+  --color-ivory: #f4f1e8;
+  --color-cream: #e8e6dd;
+  --color-mist: #d8d4c8;
+  --color-sand: #c9c2ac;
+  --color-muted: #b9b4a6;
+  --color-muted-2: #9a958a;
+  --color-muted-3: #8f8a7d;
+  --color-ink: #171207;
+
+  --font-display: "Cinzel", serif;
+  --font-body: "Jost", sans-serif;
+
+  --animate-glow: rcs-glow 5s ease-in-out infinite;
+
+  @keyframes rcs-glow {
+    0%,
+    100% {
+      opacity: 0.55;
+    }
+    50% {
+      opacity: 0.9;
+    }
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-night font-body text-cream antialiased overflow-x-hidden;
+  }
+}
