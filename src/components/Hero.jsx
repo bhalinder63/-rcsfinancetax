@@ -51,11 +51,18 @@ function Typewriter() {
     return () => clearTimeout(t)
   }, [length, deleting, phraseIndex])
 
+  // Long phrases shrink slightly so the line never wraps — the heading
+  // must stay exactly two lines or content below jumps every cycle.
+  const sizeClass =
+    ROTATING_PHRASES[phraseIndex].length >= 20 ? 'text-[.72em] md:text-[.82em]' : 'text-[.85em] md:text-[1em]'
+
   return (
     <>
       <span className="sr-only">Business Solutions.</span>
-      <span aria-hidden="true">
-        <span className="inline-block animate-[gold-sheen_4.5s_ease-in-out_infinite] bg-linear-120 from-gold-light from-10% via-gold-deep via-60% to-gold-soft to-95% bg-[length:200%_auto] bg-clip-text text-transparent">
+      <span aria-hidden="true" className="whitespace-nowrap">
+        <span
+          className={`inline-block animate-[gold-sheen_4.5s_ease-in-out_infinite] bg-linear-120 from-gold-light from-10% via-gold-deep via-60% to-gold-soft to-95% bg-[length:200%_auto] bg-clip-text text-transparent ${sizeClass}`}
+        >
           {ROTATING_PHRASES[phraseIndex].slice(0, length) || ' '}
         </span>
         <span className="ml-1 inline-block h-[0.85em] w-[3px] translate-y-[0.12em] animate-[blink_1.1s_steps(1)_infinite] rounded-full bg-gold-bright" />
@@ -65,6 +72,21 @@ function Typewriter() {
 }
 
 export default function Hero({ onEnquiry }) {
+  const tiltRef = useRef(null)
+
+  const handleTilt = (e) => {
+    const el = tiltRef.current
+    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const rect = el.getBoundingClientRect()
+    const x = (e.clientX - rect.left) / rect.width - 0.5
+    const y = (e.clientY - rect.top) / rect.height - 0.5
+    el.style.transform = `rotateY(${(x * 7).toFixed(2)}deg) rotateX(${(-y * 7).toFixed(2)}deg)`
+  }
+
+  const resetTilt = () => {
+    if (tiltRef.current) tiltRef.current.style.transform = ''
+  }
+
   return (
     <section
       id="home"
@@ -110,21 +132,30 @@ export default function Hero({ onEnquiry }) {
           </div>
         </div>
 
-        <div className="relative flex min-h-[320px] items-center justify-center md:min-h-[380px] lg:min-h-[440px]">
+        <div
+          onMouseMove={handleTilt}
+          onMouseLeave={resetTilt}
+          className="relative flex min-h-[320px] items-center justify-center perspective-[900px] md:min-h-[380px] lg:min-h-[440px]"
+        >
           <div className="absolute size-[480px] max-w-full animate-[fade-in_.8s_.3s_ease-out_both,rcs-glow_5s_ease-in-out_infinite] rounded-full bg-[radial-gradient(circle,rgba(212,175,55,.22)_0%,transparent_65%)]" />
-          <div className="relative flex animate-[card-in_.6s_.35s_ease-out_both] flex-col items-center gap-[18px] rounded-[14px] border border-gold/35 bg-linear-160 from-[rgba(20,24,36,.9)] to-[rgba(10,12,18,.95)] px-7 pb-[26px] pt-8 shadow-[0_30px_80px_rgba(0,0,0,.6),inset_0_1px_0_rgba(212,175,55,.2)] md:px-14 md:pb-9 md:pt-11">
-            <img
-              src={logoIcon}
-              alt="RCS crest"
-              width="490"
-              height="512"
-              fetchPriority="high"
-              className="h-40 w-auto drop-shadow-[0_10px_30px_rgba(212,175,55,.35)] md:h-[230px]"
-            />
-            <img src={logoWordmark} alt="RCS Finance & Tax Experts" width="752" height="105" className="h-[34px] w-auto md:h-11" />
-            <span className="text-center text-[13px] tracking-[2.5px] text-muted-3">
-              TRUST · TRANSPARENCY · EXCELLENCE
-            </span>
+          <div className="relative animate-[card-in_.6s_.35s_ease-out_both,float_6s_1.2s_ease-in-out_infinite]">
+            <div
+              ref={tiltRef}
+              className="flex flex-col items-center gap-[18px] rounded-[14px] border border-gold/35 bg-linear-160 from-[rgba(20,24,36,.9)] to-[rgba(10,12,18,.95)] px-7 pb-[26px] pt-8 shadow-[0_30px_80px_rgba(0,0,0,.6),inset_0_1px_0_rgba(212,175,55,.2)] transition-transform duration-200 ease-out will-change-transform transform-3d md:px-14 md:pb-9 md:pt-11"
+            >
+              <img
+                src={logoIcon}
+                alt="RCS crest"
+                width="490"
+                height="512"
+                fetchPriority="high"
+                className="h-40 w-auto animate-[crest-breathe_5s_ease-in-out_infinite] md:h-[230px]"
+              />
+              <img src={logoWordmark} alt="RCS Finance & Tax Experts" width="752" height="105" className="h-[34px] w-auto md:h-11" />
+              <span className="text-center text-[13px] tracking-[2.5px] text-muted-3">
+                TRUST · TRANSPARENCY · EXCELLENCE
+              </span>
+            </div>
           </div>
         </div>
       </div>

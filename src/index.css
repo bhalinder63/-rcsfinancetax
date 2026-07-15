@@ -89,6 +89,26 @@
   }
 }
 
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes crest-breathe {
+  0%,
+  100% {
+    filter: drop-shadow(0 10px 30px rgba(212, 175, 55, 0.25));
+  }
+  50% {
+    filter: drop-shadow(0 12px 40px rgba(212, 175, 55, 0.5));
+  }
+}
+
 @keyframes blink {
   0%,
   49% {
