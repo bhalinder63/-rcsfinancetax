@@ -1,7 +1,68 @@
+import { useEffect, useRef, useState } from 'react'
 import { TRUST_ITEMS } from '../data.js'
 import Button from './Button.jsx'
 import logoIcon from '../assets/rcslogoicon.png'
 import logoWordmark from '../assets/rcslogo.png'
+
+const ROTATING_PHRASES = [
+  'Business Solutions.',
+  'Company Registration.',
+  'GST Services.',
+  'Trademark & IP.',
+  'Investment Advisory.',
+  'TDS & Payroll.',
+]
+
+const TYPE_MS = 85
+const DELETE_MS = 45
+const HOLD_MS = 2000
+const GAP_MS = 350
+
+function Typewriter() {
+  const [phraseIndex, setPhraseIndex] = useState(0)
+  const [length, setLength] = useState(0)
+  const [deleting, setDeleting] = useState(false)
+  const reduced = useRef(
+    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  )
+
+  useEffect(() => {
+    const phrase = ROTATING_PHRASES[phraseIndex]
+
+    // Reduced motion: no typing — show full phrases and swap every 3s
+    if (reduced.current) {
+      setLength(phrase.length)
+      const t = setTimeout(() => setPhraseIndex((i) => (i + 1) % ROTATING_PHRASES.length), 3000)
+      return () => clearTimeout(t)
+    }
+
+    let t
+    if (!deleting) {
+      if (length < phrase.length) t = setTimeout(() => setLength(length + 1), TYPE_MS)
+      else t = setTimeout(() => setDeleting(true), HOLD_MS)
+    } else if (length > 0) {
+      t = setTimeout(() => setLength(length - 1), DELETE_MS)
+    } else {
+      t = setTimeout(() => {
+        setPhraseIndex((i) => (i + 1) % ROTATING_PHRASES.length)
+        setDeleting(false)
+      }, GAP_MS)
+    }
+    return () => clearTimeout(t)
+  }, [length, deleting, phraseIndex])
+
+  return (
+    <>
+      <span className="sr-only">Business Solutions.</span>
+      <span aria-hidden="true">
+        <span className="inline-block animate-[gold-sheen_4.5s_ease-in-out_infinite] bg-linear-120 from-gold-light from-10% via-gold-deep via-60% to-gold-soft to-95% bg-[length:200%_auto] bg-clip-text text-transparent">
+          {ROTATING_PHRASES[phraseIndex].slice(0, length) || ' '}
+        </span>
+        <span className="ml-1 inline-block h-[0.85em] w-[3px] translate-y-[0.12em] animate-[blink_1.1s_steps(1)_infinite] rounded-full bg-gold-bright" />
+      </span>
+    </>
+  )
+}
 
 export default function Hero({ onEnquiry }) {
   return (
@@ -20,9 +81,7 @@ export default function Hero({ onEnquiry }) {
           <h1 className="mb-[22px] animate-[rise_.55s_.15s_ease-out_both] font-display text-[clamp(36px,4.5vw,58px)] font-bold leading-[1.12]">
             <span className="text-ivory">Tax, Finance &amp;</span>
             <br />
-            <span className="bg-linear-120 from-gold-light from-10% via-gold-deep via-60% to-gold-soft to-95% bg-clip-text text-transparent">
-              Business Solutions.
-            </span>
+            <Typewriter />
           </h1>
           <p className="mb-[34px] max-w-[520px] animate-[rise_.55s_.28s_ease-out_both] text-base leading-[1.65] text-muted [text-wrap:pretty] md:text-lg">
             Professional, transparent and reliable financial services for individuals, businesses and

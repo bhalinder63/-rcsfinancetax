@@ -33,18 +33,66 @@ export const STATS = [
 ]
 
 export const SERVICES = [
-  { tag: 'IT', name: 'Income Tax', desc: 'ITR filing, planning & advisory' },
-  { tag: 'GST', name: 'GST Services', desc: 'Registration, returns & compliance' },
-  { tag: 'AC', name: 'Accounting', desc: 'Bookkeeping, MIS & reporting' },
-  { tag: 'CR', name: 'Company Registration', desc: 'Private, LLP, OPC & more' },
-  { tag: 'TDS', name: 'TDS & Payroll', desc: 'TDS filing, payroll & compliance' },
-  { tag: 'BA', name: 'Business Advisory', desc: 'Growth, strategy & planning' },
-  { tag: 'AU', name: 'Audit & Assurance', desc: 'Internal, statutory & tax audit' },
-  { tag: 'ROC', name: 'ROC Compliance', desc: 'Annual filing, ROC & MCA services' },
-  { tag: 'TM', name: 'Trademark & IP', desc: 'Trademark, copyright & IP protection' },
-  { tag: 'LN', name: 'Loan & Funding', desc: 'Business loan, OD & working capital' },
-  { tag: 'IA', name: 'Investment Advisory', desc: 'Mutual funds, SIP & portfolio' },
-  { tag: 'DSC', name: 'Digital Signature', desc: 'DSC, e-stamping & more' },
+  {
+    tag: 'IT',
+    name: 'Income Tax',
+    desc: 'Complete income tax solutions for salaried individuals, professionals, businesses and NRIs — accurate ITR filing, advance tax computation, refund tracking, notice handling and year-round planning that helps you save tax the legal way.',
+  },
+  {
+    tag: 'GST',
+    name: 'GST Services',
+    desc: 'Everything your business needs to stay GST-compliant: new registration, monthly, quarterly and annual returns, e-invoicing, input tax credit reconciliation, and expert help with GST notices, amendments and refunds.',
+  },
+  {
+    tag: 'AC',
+    name: 'Accounting',
+    desc: 'Reliable day-to-day bookkeeping on Tally or cloud platforms, ledger and bank reconciliation, and monthly MIS reports — so you always know your profits, dues and cash position without hiring a full-time accountant.',
+  },
+  {
+    tag: 'CR',
+    name: 'Company Registration',
+    desc: 'Complete incorporation support for Private Limited, LLP, OPC, Partnership and Proprietorship — name approval, digital signatures, MOA/AOA drafting, PAN, TAN, GST and bank account opening, all under one roof.',
+  },
+  {
+    tag: 'TDS',
+    name: 'TDS & Payroll',
+    desc: 'End-to-end TDS management — deduction, monthly deposit, quarterly returns (24Q/26Q) and Form 16/16A issuance — along with payroll processing, salary structuring, and PF, ESI and professional tax compliance.',
+  },
+  {
+    tag: 'BA',
+    name: 'Business Advisory',
+    desc: 'Hands-on advice for growing businesses: budgeting, cash-flow and working-capital management, pricing and profitability analysis, and business structure planning — practical strategy rooted in real numbers.',
+  },
+  {
+    tag: 'AU',
+    name: 'Audit & Assurance',
+    desc: 'Internal, statutory, tax and stock audits conducted independently and on schedule. We strengthen your controls, flag risks before they become problems and give banks and investors confidence in your numbers.',
+  },
+  {
+    tag: 'ROC',
+    name: 'ROC Compliance',
+    desc: 'Stay on the right side of the Companies Act — annual returns (AOC-4, MGT-7), director KYC, board and shareholder resolutions, share transfers and every ROC/MCA filing completed accurately and before deadlines.',
+  },
+  {
+    tag: 'TM',
+    name: 'Trademark & IP',
+    desc: 'Safeguard what makes your business unique. We handle trademark search, application, objection and opposition replies, renewals, plus copyright and design registration — protecting your brand end to end.',
+  },
+  {
+    tag: 'LN',
+    name: 'Loan & Funding',
+    desc: 'Support for securing business loans, overdrafts, cash-credit limits and working-capital finance — project reports, CMA data preparation, documentation and bank coordination until funds reach your account.',
+  },
+  {
+    tag: 'IA',
+    name: 'Investment Advisory',
+    desc: 'Goal-based investment planning across mutual funds, SIPs and fixed-income options. We assess your risk profile, build a balanced portfolio and review it regularly so your money grows with your life goals.',
+  },
+  {
+    tag: 'DSC',
+    name: 'Digital Signature',
+    desc: 'Fast issuance of Class 3 digital signature certificates for GST, income tax, MCA, EPFO and e-tender portals — including renewals, USB tokens and e-stamping support, usually processed the same day.',
+  },
 ]
 
 export const REASONS = [
