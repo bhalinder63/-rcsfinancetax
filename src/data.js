@@ -106,6 +106,18 @@ export const REASONS = [
   'One Stop Solution',
 ]
 
+// Client logos: text wordmarks for now — to use official logo images,
+// drop files in src/assets/clients/ and add a `logo` field per entry.
+export const CLIENTS = [
+  'TATA',
+  'Reliance Industries',
+  'Mahindra',
+  'HDFC Bank',
+  'JSW',
+  'DLF',
+  'Maruti Suzuki',
+]
+
 export const FOOTER_SERVICES = [
   'Income Tax',
   'GST Services',

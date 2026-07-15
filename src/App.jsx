@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Topbar from './components/Topbar.jsx'
 import Navbar from './components/Navbar.jsx'
 import Hero from './components/Hero.jsx'
+import TrustedBy from './components/TrustedBy.jsx'
 import Stats from './components/Stats.jsx'
 import Services from './components/Services.jsx'
 import WhyRcs from './components/WhyRcs.jsx'
@@ -20,6 +21,7 @@ export default function App() {
       <Navbar onEnquiry={openEnquiry} />
       <main>
         <Hero onEnquiry={openEnquiry} />
+        <TrustedBy />
         <Stats />
         <Services />
         <WhyRcs onEnquiry={openEnquiry} />
