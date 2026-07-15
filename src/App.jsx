@@ -12,7 +12,11 @@ import EnquiryModal from './components/EnquiryModal.jsx'
 
 export default function App() {
   const [enquiryOpen, setEnquiryOpen] = useState(() => window.location.hash === '#enquiry')
-  const openEnquiry = () => setEnquiryOpen(true)
+  const [enquiryService, setEnquiryService] = useState('')
+  const openEnquiry = (service) => {
+    setEnquiryService(typeof service === 'string' ? service : '')
+    setEnquiryOpen(true)
+  }
   const closeEnquiry = () => setEnquiryOpen(false)
 
   return (
@@ -23,12 +27,12 @@ export default function App() {
         <Hero onEnquiry={openEnquiry} />
         <TrustedBy />
         <Stats />
-        <Services />
+        <Services onEnquiry={openEnquiry} />
         <WhyRcs onEnquiry={openEnquiry} />
       </main>
       <Footer />
       <WhatsAppFloat />
-      <EnquiryModal open={enquiryOpen} onClose={closeEnquiry} />
+      <EnquiryModal open={enquiryOpen} onClose={closeEnquiry} initialService={enquiryService} />
     </>
   )
 }

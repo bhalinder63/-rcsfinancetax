@@ -7,9 +7,13 @@ const inputClasses =
 
 const initialForm = { name: '', phone: '', email: '', service: '', message: '' }
 
-export default function EnquiryModal({ open, onClose }) {
+export default function EnquiryModal({ open, onClose, initialService = '' }) {
   const [form, setForm] = useState(initialForm)
   const nameRef = useRef(null)
+
+  useEffect(() => {
+    if (open && initialService) setForm((f) => ({ ...f, service: initialService }))
+  }, [open, initialService])
 
   useEffect(() => {
     if (!open) return
