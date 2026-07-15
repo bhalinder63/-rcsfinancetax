@@ -3,7 +3,7 @@ import { CONTACT, SERVICES } from '../data.js'
 import Button from './Button.jsx'
 
 const inputClasses =
-  'w-full rounded-md border border-gold/25 bg-night px-4 py-3 text-[15px] text-cream placeholder:text-muted-3 outline-none transition-colors focus:border-gold/60'
+  'w-full rounded-md border border-gold/25 bg-night px-4 py-3 text-base text-cream placeholder:text-muted-3 transition-colors focus:border-gold/60 focus-visible:outline-offset-0'
 
 const initialForm = { name: '', phone: '', email: '', service: '', message: '' }
 
@@ -65,7 +65,7 @@ export default function EnquiryModal({ open, onClose }) {
             type="button"
             aria-label="Close"
             onClick={onClose}
-            className="flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-gold/25 text-lg text-muted transition-colors hover:border-gold/60 hover:text-gold-bright"
+            className="flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-full border border-gold/25 text-xl text-muted transition-colors hover:border-gold/60 hover:text-gold-bright"
           >
             ×
           </button>
@@ -80,6 +80,7 @@ export default function EnquiryModal({ open, onClose }) {
                 type="text"
                 name="name"
                 required
+                autoComplete="name"
                 value={form.name}
                 onChange={handleChange}
                 placeholder="Your name"
@@ -92,6 +93,7 @@ export default function EnquiryModal({ open, onClose }) {
                 type="tel"
                 name="phone"
                 required
+                autoComplete="tel"
                 value={form.phone}
                 onChange={handleChange}
                 placeholder="+91 …"
@@ -105,6 +107,7 @@ export default function EnquiryModal({ open, onClose }) {
             <input
               type="email"
               name="email"
+              autoComplete="email"
               value={form.email}
               onChange={handleChange}
               placeholder="you@example.com"

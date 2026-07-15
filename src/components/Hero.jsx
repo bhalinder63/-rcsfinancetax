@@ -57,9 +57,12 @@ export default function Hero({ onEnquiry }) {
             <img
               src={logoIcon}
               alt="RCS crest"
+              width="490"
+              height="512"
+              fetchPriority="high"
               className="h-40 w-auto drop-shadow-[0_10px_30px_rgba(212,175,55,.35)] md:h-[230px]"
             />
-            <img src={logoWordmark} alt="RCS Finance & Tax Experts" className="h-[34px] w-auto md:h-11" />
+            <img src={logoWordmark} alt="RCS Finance & Tax Experts" width="752" height="105" className="h-[34px] w-auto md:h-11" />
             <span className="text-center text-[13px] tracking-[2.5px] text-muted-3">
               TRUST · TRANSPARENCY · EXCELLENCE
             </span>

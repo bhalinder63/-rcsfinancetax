@@ -9,8 +9,15 @@ export default function Footer() {
       <div className="grid gap-8 pb-12 md:grid-cols-2 md:gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-3">
-            <img src={logoIcon} alt="RCS crest" className="h-14 w-auto" />
-            <img src={logoWordmark} alt="RCS Finance & Tax Experts" className="h-[34px] w-auto" />
+            <img src={logoIcon} alt="RCS crest" width="490" height="512" loading="lazy" className="h-14 w-auto" />
+            <img
+              src={logoWordmark}
+              alt="RCS Finance & Tax Experts"
+              width="752"
+              height="105"
+              loading="lazy"
+              className="h-[34px] w-auto"
+            />
           </div>
           <p className="max-w-[340px] text-[15px] leading-relaxed text-muted-2 [text-wrap:pretty]">
             Empowering individuals and businesses with reliable, efficient and result-driven
@@ -26,7 +33,7 @@ export default function Footer() {
             <a
               key={link.label}
               href={link.href}
-              className="text-[15px] text-muted transition-colors hover:text-gold-light"
+              className="py-1 -my-1 text-[15px] text-muted transition-colors hover:text-gold-light"
             >
               {link.label}
             </a>
@@ -41,7 +48,7 @@ export default function Footer() {
             <a
               key={name}
               href="#services"
-              className="text-[15px] text-muted transition-colors hover:text-gold-light"
+              className="py-1 -my-1 text-[15px] text-muted transition-colors hover:text-gold-light"
             >
               {name}
             </a>
@@ -62,7 +69,7 @@ export default function Footer() {
           </a>
           <a
             href={`mailto:${CONTACT.email}`}
-            className="text-[15px] text-muted transition-colors hover:text-gold-light"
+            className="py-1 -my-1 text-[15px] text-muted transition-colors hover:text-gold-light"
           >
             {CONTACT.email}
           </a>
@@ -74,10 +81,10 @@ export default function Footer() {
         <span>© 2026 RCS Finance &amp; Tax Experts. All Rights Reserved.</span>
         <span>Built on Trust, Transparency &amp; Excellence.</span>
         <div className="flex gap-[22px]">
-          <a href="#" className="text-muted-3 transition-colors hover:text-gold-light">
+          <a href="#" className="py-1 -my-1 text-muted-3 transition-colors hover:text-gold-light">
             Privacy Policy
           </a>
-          <a href="#" className="text-muted-3 transition-colors hover:text-gold-light">
+          <a href="#" className="py-1 -my-1 text-muted-3 transition-colors hover:text-gold-light">
             Terms &amp; Conditions
           </a>
         </div>
