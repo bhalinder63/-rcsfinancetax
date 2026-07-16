@@ -77,6 +77,9 @@ export default function Navbar({ onEnquiry }) {
               </a>
             )
           })}
+          <a href="/login" className="text-cream transition-colors hover:text-gold-bright">
+            Login
+          </a>
           <Button onClick={onEnquiry}>Get in Touch</Button>
         </nav>
       </div>
@@ -96,6 +99,12 @@ export default function Navbar({ onEnquiry }) {
               {link.label}
             </a>
           ))}
+          <a
+            href="/login"
+            className="border-b border-gold/10 px-1 py-3.5 text-[15px] font-medium tracking-[.5px] text-cream"
+          >
+            Login
+          </a>
           <Button
             className="mt-4 text-center"
             onClick={() => {
