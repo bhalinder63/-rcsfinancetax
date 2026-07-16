@@ -1,17 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
-import { supabase } from '../lib/supabase.js'
+import { supabase, openDocument, uploadRequestDocuments } from '../lib/supabase.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import { SERVICES } from '../data.js'
 import Button from '../components/Button.jsx'
 import PortalShell from '../components/portal/PortalShell.jsx'
 import StatusBadge from '../components/portal/StatusBadge.jsx'
+import DocumentChip from '../components/portal/DocumentChip.jsx'
 
 const inputClasses =
   'w-full rounded-md border border-gold/25 bg-night px-4 py-3 text-base text-cream placeholder:text-muted-3 transition-colors focus:border-gold/60 focus-visible:outline-offset-0'
-
-function sanitizeFileName(name) {
-  return name.replace(/[^a-zA-Z0-9._-]/g, '_')
-}
 
 export default function Portal() {
   const { session } = useAuth()
@@ -27,7 +24,7 @@ export default function Portal() {
   const loadRequests = async () => {
     const { data } = await supabase
       .from('requests')
-      .select('*, documents(id, file_name)')
+      .select('*, documents(id, file_name, file_path, uploaded_by)')
       .order('created_at', { ascending: false })
     setRequests(data ?? [])
   }
@@ -42,6 +39,7 @@ export default function Portal() {
         { event: '*', schema: 'public', table: 'requests', filter: `client_id=eq.${userId}` },
         () => loadRequests(),
       )
+      .on('postgres_changes', { event: 'insert', schema: 'public', table: 'documents' }, () => loadRequests())
       .subscribe()
     return () => supabase.removeChannel(channel)
   }, [userId])
@@ -60,15 +58,7 @@ export default function Portal() {
       if (reqErr) throw reqErr
 
       const files = Array.from(fileRef.current?.files ?? [])
-      for (const file of files) {
-        const path = `${userId}/${request.id}/${Date.now()}_${sanitizeFileName(file.name)}`
-        const { error: upErr } = await supabase.storage.from('documents').upload(path, file)
-        if (upErr) throw upErr
-        const { error: docErr } = await supabase
-          .from('documents')
-          .insert({ request_id: request.id, uploaded_by: userId, file_path: path, file_name: file.name })
-        if (docErr) throw docErr
-      }
+      await uploadRequestDocuments({ files, clientId: userId, requestId: request.id, uploadedBy: userId })
 
       setForm({ service: '', note: '' })
       if (fileRef.current) fileRef.current.value = ''
@@ -164,7 +154,7 @@ export default function Portal() {
                 <StatusBadge status={req.status} />
               </div>
               {req.note && <p className="mb-2 text-[14px] leading-relaxed text-muted-2">{req.note}</p>}
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px] text-muted-3">
+              <div className="mb-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px] text-muted-3">
                 <span>
                   {new Date(req.created_at).toLocaleDateString('en-IN', {
                     day: 'numeric',
@@ -172,12 +162,19 @@ export default function Portal() {
                     year: 'numeric',
                   })}
                 </span>
-                {req.documents?.length > 0 && (
-                  <span>
-                    {req.documents.length} document{req.documents.length > 1 ? 's' : ''} attached
-                  </span>
-                )}
               </div>
+              {req.documents?.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {req.documents.map((doc) => (
+                    <DocumentChip
+                      key={doc.id}
+                      doc={doc}
+                      fromRcs={doc.uploaded_by !== userId}
+                      onOpen={(d) => openDocument(d).catch((err) => setError(err.message))}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           ))}
         </div>

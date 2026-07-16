@@ -1,11 +1,55 @@
-import { useEffect, useState } from 'react'
-import { supabase, STATUS_LABELS } from '../lib/supabase.js'
+import { useEffect, useRef, useState } from 'react'
+import { supabase, STATUS_LABELS, openDocument, uploadRequestDocuments } from '../lib/supabase.js'
+import { useAuth } from '../context/AuthContext.jsx'
 import PortalShell from '../components/portal/PortalShell.jsx'
 import StatusBadge from '../components/portal/StatusBadge.jsx'
+import DocumentChip from '../components/portal/DocumentChip.jsx'
 
 const FILTERS = ['all', 'submitted', 'in_process', 'completed']
 
+function SendToClient({ request, adminId, onDone, onError }) {
+  const fileRef = useRef(null)
+  const [busy, setBusy] = useState(false)
+
+  const handleFiles = async (e) => {
+    const files = Array.from(e.target.files ?? [])
+    if (files.length === 0) return
+    setBusy(true)
+    try {
+      await uploadRequestDocuments({
+        files,
+        clientId: request.client_id,
+        requestId: request.id,
+        uploadedBy: adminId,
+      })
+      if (fileRef.current) fileRef.current.value = ''
+      onDone()
+    } catch (err) {
+      onError(err.message || 'Upload failed. Please try again.')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <>
+      <input ref={fileRef} type="file" multiple className="hidden" onChange={handleFiles} />
+      <button
+        type="button"
+        disabled={busy}
+        onClick={() => fileRef.current?.click()}
+        className="cursor-pointer rounded-md border border-gold/50 bg-gold/10 px-3 py-1.5 text-[13px] font-medium text-gold-bright transition-colors hover:bg-gold/20 disabled:cursor-default disabled:opacity-50"
+      >
+        {busy ? 'Uploading…' : '↑ Send document to client'}
+      </button>
+    </>
+  )
+}
+
 export default function Admin() {
+  const { session } = useAuth()
+  const adminId = session.user.id
+
   const [requests, setRequests] = useState([])
   const [filter, setFilter] = useState('all')
   const [error, setError] = useState('')
@@ -13,7 +57,7 @@ export default function Admin() {
   const loadRequests = async () => {
     const { data, error: err } = await supabase
       .from('requests')
-      .select('*, client:profiles!client_id(full_name, phone), documents(id, file_name, file_path)')
+      .select('*, client:profiles!client_id(full_name, phone), documents(id, file_name, file_path, uploaded_by)')
       .order('created_at', { ascending: false })
     if (err) setError(err.message)
     else setRequests(data ?? [])
@@ -24,6 +68,7 @@ export default function Admin() {
     const channel = supabase
       .channel('all-requests')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'requests' }, () => loadRequests())
+      .on('postgres_changes', { event: 'insert', schema: 'public', table: 'documents' }, () => loadRequests())
       .subscribe()
     return () => supabase.removeChannel(channel)
   }, [])
@@ -35,13 +80,9 @@ export default function Admin() {
     else loadRequests()
   }
 
-  const openDocument = async (doc) => {
+  const handleOpenDocument = (doc) => {
     setError('')
-    const { data, error: err } = await supabase.storage
-      .from('documents')
-      .createSignedUrl(doc.file_path, 3600)
-    if (err) setError(err.message)
-    else window.open(data.signedUrl, '_blank', 'noopener')
+    openDocument(doc).catch((err) => setError(err.message))
   }
 
   const visible = filter === 'all' ? requests : requests.filter((r) => r.status === filter)
@@ -79,68 +120,91 @@ export default function Admin() {
             No requests here yet.
           </div>
         )}
-        {visible.map((req) => (
-          <div key={req.id} className="rounded-xl border border-gold/25 bg-panel p-5">
-            <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <div className="mb-1 flex flex-wrap items-center gap-3">
-                  <span className="text-[16.5px] font-semibold text-ivory">{req.service}</span>
-                  <StatusBadge status={req.status} />
+        {visible.map((req) => {
+          const fromClient = (req.documents ?? []).filter((d) => d.uploaded_by === req.client_id)
+          const fromRcs = (req.documents ?? []).filter((d) => d.uploaded_by !== req.client_id)
+          return (
+            <div key={req.id} className="rounded-xl border border-gold/25 bg-panel p-5">
+              <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <div className="mb-1 flex flex-wrap items-center gap-3">
+                    <span className="text-[16.5px] font-semibold text-ivory">{req.service}</span>
+                    <StatusBadge status={req.status} />
+                  </div>
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[13.5px] text-muted-2">
+                    <span className="font-medium text-mist">{req.client?.full_name || 'Unknown client'}</span>
+                    {req.client?.phone && (
+                      <a href={`tel:${req.client.phone}`} className="text-gold-bright hover:text-gold-light">
+                        {req.client.phone}
+                      </a>
+                    )}
+                    <span className="text-muted-3">
+                      {new Date(req.created_at).toLocaleString('en-IN', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[13.5px] text-muted-2">
-                  <span className="font-medium text-mist">{req.client?.full_name || 'Unknown client'}</span>
-                  {req.client?.phone && (
-                    <a href={`tel:${req.client.phone}`} className="text-gold-bright hover:text-gold-light">
-                      {req.client.phone}
-                    </a>
-                  )}
-                  <span className="text-muted-3">
-                    {new Date(req.created_at).toLocaleString('en-IN', {
-                      day: 'numeric',
-                      month: 'short',
-                      year: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </span>
-                </div>
-              </div>
 
-              <label className="flex items-center gap-2 text-[13px] text-muted-2">
-                Status
-                <select
-                  value={req.status}
-                  onChange={(e) => updateStatus(req.id, e.target.value)}
-                  className="cursor-pointer rounded-md border border-gold/30 bg-night px-3 py-2 text-[13.5px] text-cream transition-colors focus:border-gold/60"
-                >
-                  {Object.entries(STATUS_LABELS).map(([value, label]) => (
-                    <option key={value} value={value}>
-                      {label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
-
-            {req.note && <p className="mb-3 text-[14px] leading-relaxed text-muted-2">{req.note}</p>}
-
-            {req.documents?.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {req.documents.map((doc) => (
-                  <button
-                    key={doc.id}
-                    type="button"
-                    onClick={() => openDocument(doc)}
-                    className="cursor-pointer rounded-md border border-gold/30 bg-night px-3 py-1.5 text-[13px] text-gold-bright transition-colors hover:border-gold/60 hover:bg-gold/8"
+                <label className="flex items-center gap-2 text-[13px] text-muted-2">
+                  Status
+                  <select
+                    value={req.status}
+                    onChange={(e) => updateStatus(req.id, e.target.value)}
+                    className="cursor-pointer rounded-md border border-gold/30 bg-night px-3 py-2 text-[13.5px] text-cream transition-colors focus:border-gold/60"
                   >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="mr-1.5 inline size-3.5 -translate-y-px" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
-                    {doc.file_name}
-                  </button>
-                ))}
+                    {Object.entries(STATUS_LABELS).map(([value, label]) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
               </div>
-            )}
-          </div>
-        ))}
+
+              {req.note && <p className="mb-3 text-[14px] leading-relaxed text-muted-2">{req.note}</p>}
+
+              {fromClient.length > 0 && (
+                <div className="mb-3">
+                  <span className="mb-1.5 block text-[12px] uppercase tracking-[1.5px] text-muted-3">
+                    From client
+                  </span>
+                  <div className="flex flex-wrap gap-2">
+                    {fromClient.map((doc) => (
+                      <DocumentChip key={doc.id} doc={doc} onOpen={handleOpenDocument} />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {fromRcs.length > 0 && (
+                <div className="mb-3">
+                  <span className="mb-1.5 block text-[12px] uppercase tracking-[1.5px] text-muted-3">
+                    Sent to client
+                  </span>
+                  <div className="flex flex-wrap gap-2">
+                    {fromRcs.map((doc) => (
+                      <DocumentChip key={doc.id} doc={doc} fromRcs onOpen={handleOpenDocument} />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="mt-1 border-t border-gold/12 pt-3">
+                <SendToClient
+                  request={req}
+                  adminId={adminId}
+                  onDone={loadRequests}
+                  onError={(msg) => setError(msg)}
+                />
+              </div>
+            </div>
+          )
+        })}
       </div>
     </PortalShell>
   )
