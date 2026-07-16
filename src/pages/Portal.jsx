@@ -5,16 +5,14 @@ import { SERVICES } from '../data.js'
 import Button from '../components/Button.jsx'
 import PortalShell from '../components/portal/PortalShell.jsx'
 import StatusBadge from '../components/portal/StatusBadge.jsx'
-import CompleteProfile from '../components/portal/CompleteProfile.jsx'
 import DocumentChip from '../components/portal/DocumentChip.jsx'
 
 const inputClasses =
   'w-full rounded-md border border-gold/25 bg-night px-4 py-3 text-base text-cream placeholder:text-muted-3 transition-colors focus:border-gold/60 focus-visible:outline-offset-0'
 
 export default function Portal() {
-  const { session, profile } = useAuth()
+  const { session } = useAuth()
   const userId = session.user.id
-  const profileIncomplete = !profile?.full_name?.trim() || !profile?.phone?.trim()
 
   const [requests, setRequests] = useState([])
   const [form, setForm] = useState({ service: '', note: '' })
@@ -75,7 +73,6 @@ export default function Portal() {
 
   return (
     <PortalShell title="My Requests" subtitle="Submit a service request and track its status.">
-      {profileIncomplete && <CompleteProfile />}
       <div className="grid gap-6 lg:grid-cols-[1fr_1.4fr]">
         {/* ── New request ── */}
         <form
