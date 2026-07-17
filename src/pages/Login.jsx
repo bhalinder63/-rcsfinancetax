@@ -10,7 +10,7 @@ const inputClasses =
   'w-full rounded-md border border-gold/25 bg-night px-4 py-3 text-base text-cream placeholder:text-muted-3 transition-colors focus:border-gold/60 focus-visible:outline-offset-0'
 
 export default function Login() {
-  const [mode, setMode] = useState('signin') // signin | signup
+  const [mode, setMode] = useState('signin') // signin | signup | forgot
   const [form, setForm] = useState({ name: '', phone: '', email: '', password: '' })
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
@@ -45,7 +45,13 @@ export default function Login() {
     setNotice('')
     setBusy(true)
     try {
-      if (mode === 'signup') {
+      if (mode === 'forgot') {
+        const { error: err } = await supabase.auth.resetPasswordForEmail(form.email, {
+          redirectTo: `${window.location.origin}/reset-password`,
+        })
+        if (err) throw err
+        setNotice('Password reset link sent — check your email (and spam folder).')
+      } else if (mode === 'signup') {
         const { data, error: err } = await supabase.auth.signUp({
           email: form.email,
           password: form.password,
@@ -79,12 +85,14 @@ export default function Login() {
 
         <div className="rounded-xl border border-gold/35 bg-linear-160 from-card to-panel p-6 shadow-[0_30px_80px_rgba(0,0,0,.7),inset_0_1px_0_rgba(212,175,55,.2)] md:p-8">
           <h1 className="mb-1 font-display text-[24px] font-bold text-ivory">
-            {mode === 'signin' ? 'Client Login' : 'Create Account'}
+            {mode === 'signin' ? 'Client Login' : mode === 'signup' ? 'Create Account' : 'Reset Password'}
           </h1>
           <p className="mb-6 text-[14px] text-muted-2">
             {mode === 'signin'
               ? 'Sign in to track your service requests.'
-              : 'Register to submit and track service requests.'}
+              : mode === 'signup'
+                ? 'Register to submit and track service requests.'
+                : "Enter your email and we'll send you a password reset link."}
           </p>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -133,20 +141,36 @@ export default function Login() {
               />
             </label>
 
-            <label className="flex flex-col gap-1.5">
-              <span className="text-[13px] tracking-[.5px] text-muted-2">Password *</span>
-              <input
-                type="password"
-                name="password"
-                required
-                minLength={8}
-                autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
-                value={form.password}
-                onChange={handleChange}
-                placeholder={mode === 'signup' ? 'Minimum 8 characters' : 'Your password'}
-                className={inputClasses}
-              />
-            </label>
+            {mode !== 'forgot' && (
+              <label className="flex flex-col gap-1.5">
+                <span className="text-[13px] tracking-[.5px] text-muted-2">Password *</span>
+                <input
+                  type="password"
+                  name="password"
+                  required
+                  minLength={8}
+                  autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
+                  value={form.password}
+                  onChange={handleChange}
+                  placeholder={mode === 'signup' ? 'Minimum 8 characters' : 'Your password'}
+                  className={inputClasses}
+                />
+              </label>
+            )}
+
+            {mode === 'signin' && (
+              <button
+                type="button"
+                onClick={() => {
+                  setMode('forgot')
+                  setError('')
+                  setNotice('')
+                }}
+                className="-mt-2 cursor-pointer self-end text-[13px] text-muted-2 transition-colors hover:text-gold-light"
+              >
+                Forgot password?
+              </button>
+            )}
 
             {error && (
               <p role="alert" className="rounded-md border border-red-500/40 bg-red-500/10 px-4 py-2.5 text-[13.5px] text-red-300">
@@ -160,12 +184,29 @@ export default function Login() {
             )}
 
             <Button type="submit" size="lg" className="w-full text-center" disabled={busy}>
-              {busy ? 'Please wait…' : mode === 'signin' ? 'Sign In' : 'Create Account'}
+              {busy
+                ? 'Please wait…'
+                : mode === 'signin'
+                  ? 'Sign In'
+                  : mode === 'signup'
+                    ? 'Create Account'
+                    : 'Send Reset Link'}
             </Button>
           </form>
 
           <p className="mt-5 text-center text-[14px] text-muted-2">
-            {mode === 'signin' ? (
+            {mode === 'forgot' ? (
+              <>
+                Remembered it?{' '}
+                <button
+                  type="button"
+                  onClick={() => setMode('signin')}
+                  className="cursor-pointer font-medium text-gold-bright hover:text-gold-light"
+                >
+                  Sign in
+                </button>
+              </>
+            ) : mode === 'signin' ? (
               <>
                 New client?{' '}
                 <button
