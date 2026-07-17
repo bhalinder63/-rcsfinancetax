@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { supabase, STATUS_LABELS, openDocument, uploadRequestDocuments } from '../lib/supabase.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import PortalShell from '../components/portal/PortalShell.jsx'
@@ -52,6 +53,7 @@ export default function Admin() {
 
   const [requests, setRequests] = useState([])
   const [filter, setFilter] = useState('all')
+  const [query, setQuery] = useState('')
   const [error, setError] = useState('')
 
   const loadRequests = async () => {
@@ -85,11 +87,29 @@ export default function Admin() {
     openDocument(doc).catch((err) => setError(err.message))
   }
 
-  const visible = filter === 'all' ? requests : requests.filter((r) => r.status === filter)
+  const statusFiltered = filter === 'all' ? requests : requests.filter((r) => r.status === filter)
+  const q = query.trim().toLowerCase()
+  const visible = q
+    ? statusFiltered.filter((r) =>
+        [r.client?.full_name, r.client?.phone, r.service, r.note]
+          .filter(Boolean)
+          .some((field) => field.toLowerCase().includes(q)),
+      )
+    : statusFiltered
   const counts = requests.reduce((acc, r) => ({ ...acc, [r.status]: (acc[r.status] ?? 0) + 1 }), {})
 
   return (
     <PortalShell title="Admin — Service Requests" subtitle="Review incoming requests, download documents and update status.">
+      <div className="mb-4 max-w-[420px]">
+        <input
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search by client, phone, service or note…"
+          className="w-full rounded-md border border-gold/25 bg-night px-4 py-3 text-base text-cream placeholder:text-muted-3 transition-colors focus:border-gold/60 focus-visible:outline-offset-0"
+        />
+      </div>
+
       {/* Filters */}
       <div className="mb-6 flex flex-wrap gap-2">
         {FILTERS.map((f) => (
@@ -128,11 +148,24 @@ export default function Admin() {
               <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <div className="mb-1 flex flex-wrap items-center gap-3">
-                    <span className="text-[16.5px] font-semibold text-ivory">{req.service}</span>
+                    <Link
+                      to={`/request/${req.id}`}
+                      className="text-[16.5px] font-semibold text-ivory underline-offset-2 hover:text-gold-light hover:underline"
+                    >
+                      {req.service}
+                    </Link>
                     <StatusBadge status={req.status} />
+                    <Link to={`/request/${req.id}`} className="text-[13px] text-gold-bright hover:text-gold-light">
+                      Open →
+                    </Link>
                   </div>
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[13.5px] text-muted-2">
-                    <span className="font-medium text-mist">{req.client?.full_name || 'Unknown client'}</span>
+                    <Link
+                    to={`/admin/clients/${req.client_id}`}
+                    className="font-medium text-mist underline-offset-2 hover:text-gold-light hover:underline"
+                  >
+                    {req.client?.full_name || 'Unknown client'}
+                  </Link>
                     {req.client?.phone && (
                       <a href={`tel:${req.client.phone}`} className="text-gold-bright hover:text-gold-light">
                         {req.client.phone}

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { supabase, openDocument, uploadRequestDocuments } from '../lib/supabase.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import { SERVICES } from '../data.js'
@@ -150,8 +151,18 @@ export default function Portal() {
           {requests.map((req) => (
             <div key={req.id} className="rounded-xl border border-gold/25 bg-panel p-5">
               <div className="mb-2 flex flex-wrap items-center justify-between gap-3">
-                <span className="text-[16.5px] font-semibold text-ivory">{req.service}</span>
-                <StatusBadge status={req.status} />
+                <Link
+                  to={`/request/${req.id}`}
+                  className="text-[16.5px] font-semibold text-ivory underline-offset-2 hover:text-gold-light hover:underline"
+                >
+                  {req.service}
+                </Link>
+                <div className="flex items-center gap-3">
+                  <StatusBadge status={req.status} />
+                  <Link to={`/request/${req.id}`} className="text-[13px] text-gold-bright hover:text-gold-light">
+                    View details →
+                  </Link>
+                </div>
               </div>
               {req.note && <p className="mb-2 text-[14px] leading-relaxed text-muted-2">{req.note}</p>}
               <div className="mb-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px] text-muted-3">

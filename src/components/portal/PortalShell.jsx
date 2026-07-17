@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext.jsx'
 import logoIcon from '../../assets/rcslogoicon.png'
 import logoWordmark from '../../assets/rcslogo.png'
@@ -15,6 +15,27 @@ export default function PortalShell({ title, subtitle, children }) {
             <img src={logoWordmark} alt="RCS Finance & Tax Experts" className="hidden h-7 w-auto md:block" />
           </Link>
           <div className="flex items-center gap-4">
+            {profile?.role === 'admin' && (
+              <nav className="mr-2 flex items-center gap-1 rounded-lg border border-gold/22 p-1">
+                {[
+                  { to: '/admin', label: 'Requests' },
+                  { to: '/admin/clients', label: 'Clients' },
+                ].map((tab) => (
+                  <NavLink
+                    key={tab.to}
+                    to={tab.to}
+                    end={tab.to === '/admin'}
+                    className={({ isActive }) =>
+                      `rounded-md px-3 py-1.5 text-[13.5px] font-medium transition-colors ${
+                        isActive ? 'bg-gold/15 text-gold-bright' : 'text-muted hover:text-gold-bright'
+                      }`
+                    }
+                  >
+                    {tab.label}
+                  </NavLink>
+                ))}
+              </nav>
+            )}
             <span className="hidden text-[14px] text-muted md:block">
               {profile?.full_name || profile?.role}
             </span>
