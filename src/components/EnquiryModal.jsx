@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { CONTACT, SERVICES } from '../data.js'
+import { supabase } from '../lib/supabase.js'
 import Button from './Button.jsx'
 
 const inputClasses =
@@ -31,8 +32,21 @@ export default function EnquiryModal({ open, onClose, initialService = '' }) {
 
   const handleChange = (e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }))
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
+    // Save to the admin panel's enquiry inbox first; if it fails (offline,
+    // etc.) still fall through to WhatsApp so the visitor is never blocked.
+    try {
+      await supabase.from('enquiries').insert({
+        name: form.name,
+        phone: form.phone,
+        email: form.email,
+        service: form.service,
+        message: form.message,
+      })
+    } catch {
+      /* WhatsApp fallback below still carries the enquiry */
+    }
     const lines = [
       'New enquiry — RCS Finance & Tax Experts',
       `Name: ${form.name}`,

@@ -20,6 +20,7 @@ export default function PortalShell({ title, subtitle, children }) {
                 {[
                   { to: '/admin', label: 'Requests' },
                   { to: '/admin/clients', label: 'Clients' },
+                  { to: '/admin/enquiries', label: 'Enquiries' },
                 ].map((tab) => (
                   <NavLink
                     key={tab.to}

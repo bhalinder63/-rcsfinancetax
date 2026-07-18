@@ -10,6 +10,7 @@ import ResetPassword from './pages/ResetPassword.jsx'
 import RequestDetail from './pages/RequestDetail.jsx'
 import AdminClients from './pages/AdminClients.jsx'
 import AdminClientFile from './pages/AdminClientFile.jsx'
+import AdminEnquiries from './pages/AdminEnquiries.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
 
@@ -34,6 +35,14 @@ createRoot(document.getElementById('root')).render(
             element={
               <ProtectedRoute role="admin">
                 <Admin />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/enquiries"
+            element={
+              <ProtectedRoute role="admin">
+                <AdminEnquiries />
               </ProtectedRoute>
             }
           />
