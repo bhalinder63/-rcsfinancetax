@@ -10,6 +10,9 @@ const initialForm = { name: '', phone: '', email: '', service: '', message: '' }
 
 export default function EnquiryModal({ open, onClose, initialService = '' }) {
   const [form, setForm] = useState(initialForm)
+  const [sending, setSending] = useState(false)
+  const [sent, setSent] = useState(false)
+  const [error, setError] = useState('')
   const nameRef = useRef(null)
 
   useEffect(() => {
@@ -18,6 +21,8 @@ export default function EnquiryModal({ open, onClose, initialService = '' }) {
 
   useEffect(() => {
     if (!open) return
+    setSent(false)
+    setError('')
     nameRef.current?.focus()
     document.body.style.overflow = 'hidden'
     const onKeyDown = (e) => e.key === 'Escape' && onClose()
@@ -34,31 +39,24 @@ export default function EnquiryModal({ open, onClose, initialService = '' }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    // Save to the admin panel's enquiry inbox first; if it fails (offline,
-    // etc.) still fall through to WhatsApp so the visitor is never blocked.
-    try {
-      await supabase.from('enquiries').insert({
-        name: form.name,
-        phone: form.phone,
-        email: form.email,
-        service: form.service,
-        message: form.message,
-      })
-    } catch {
-      /* WhatsApp fallback below still carries the enquiry */
+    setError('')
+    setSending(true)
+    const { error: err } = await supabase.from('enquiries').insert({
+      name: form.name,
+      phone: form.phone,
+      email: form.email,
+      service: form.service,
+      message: form.message,
+    })
+    setSending(false)
+    if (err) {
+      setError('Could not send your enquiry. Please try again — or call us directly.')
+    } else {
+      setForm(initialForm)
+      setSent(true)
     }
-    const lines = [
-      'New enquiry — RCS Finance & Tax Experts',
-      `Name: ${form.name}`,
-      `Phone: ${form.phone}`,
-      form.email && `Email: ${form.email}`,
-      form.service && `Service: ${form.service}`,
-      form.message && `Message: ${form.message}`,
-    ].filter(Boolean)
-    window.open(`${CONTACT.whatsapp}?text=${encodeURIComponent(lines.join('\n'))}`, '_blank', 'noopener')
-    setForm(initialForm)
-    onClose()
   }
+
 
   return (
     <div
@@ -89,6 +87,24 @@ export default function EnquiryModal({ open, onClose, initialService = '' }) {
           </button>
         </div>
 
+        {sent ? (
+          <div className="flex flex-col items-center gap-4 py-6 text-center">
+            <span className="flex size-14 items-center justify-center rounded-full border border-[#2f9e5f]/50 bg-[#2f9e5f]/10 text-[26px] text-[#5fce8f]">
+              ✓
+            </span>
+            <h3 className="font-display text-[22px] font-bold text-ivory">Enquiry Received</h3>
+            <p className="max-w-[360px] text-[14.5px] leading-relaxed text-muted-2">
+              Thank you — our team will contact you shortly. For anything urgent, call us at{' '}
+              <a href={CONTACT.phoneHref} className="text-gold-bright hover:text-gold-light">
+                {CONTACT.phone}
+              </a>
+              .
+            </p>
+            <Button onClick={onClose} className="mt-2">
+              Close
+            </Button>
+          </div>
+        ) : (
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="grid gap-4 md:grid-cols-2">
             <label className="flex flex-col gap-1.5">
@@ -158,18 +174,25 @@ export default function EnquiryModal({ open, onClose, initialService = '' }) {
             />
           </label>
 
-          <Button size="lg" type="submit" className="mt-1 w-full text-center">
-            Send Enquiry →
+          {error && (
+            <p role="alert" className="rounded-md border border-red-500/40 bg-red-500/10 px-4 py-2.5 text-[13.5px] text-red-300">
+              {error}
+            </p>
+          )}
+
+          <Button size="lg" type="submit" disabled={sending} className="mt-1 w-full text-center">
+            {sending ? 'Sending…' : 'Send Enquiry →'}
           </Button>
 
           <p className="text-center text-[13px] leading-relaxed text-muted-3">
-            Sending opens WhatsApp with your enquiry pre-filled — or call us at{' '}
+            We typically respond within one business day — or call us at{' '}
             <a href={CONTACT.phoneHref} className="text-gold-bright hover:text-gold-light">
               {CONTACT.phone}
             </a>
             .
           </p>
         </form>
+        )}
       </div>
     </div>
   )
