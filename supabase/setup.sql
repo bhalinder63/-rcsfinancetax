@@ -123,7 +123,7 @@ create policy "requests: only admin updates"
 create table if not exists public.documents (
   id uuid primary key default gen_random_uuid(),
   request_id uuid not null references public.requests(id) on delete cascade,
-  uploaded_by uuid not null references public.profiles(id),
+  uploaded_by uuid references public.profiles(id) on delete set null,
   file_path text not null,
   file_name text not null,
   created_at timestamptz not null default now()
@@ -206,7 +206,7 @@ $$;
 create table if not exists public.request_events (
   id uuid primary key default gen_random_uuid(),
   request_id uuid not null references public.requests(id) on delete cascade,
-  actor uuid references public.profiles(id),
+  actor uuid references public.profiles(id) on delete set null,
   type text not null check (type in ('created', 'status_changed', 'document_added')),
   detail text not null default '',
   created_at timestamptz not null default now()
@@ -270,7 +270,7 @@ where not exists (
 create table if not exists public.request_comments (
   id uuid primary key default gen_random_uuid(),
   request_id uuid not null references public.requests(id) on delete cascade,
-  author uuid not null references public.profiles(id),
+  author uuid references public.profiles(id) on delete set null,
   body text not null,
   created_at timestamptz not null default now()
 );
@@ -353,4 +353,23 @@ exception
   when duplicate_object then null;
 end;
 $$;
+
+-- ═══ Fix: deleting a user should never be blocked by their documents,
+-- comments or timeline entries — those records stay, just with the
+-- reference cleared, instead of a NO ACTION FK blocking the delete.
+-- (No-op on a fresh install where the tables above already have this.)
+
+alter table public.documents alter column uploaded_by drop not null;
+alter table public.documents drop constraint if exists documents_uploaded_by_fkey;
+alter table public.documents add constraint documents_uploaded_by_fkey
+  foreign key (uploaded_by) references public.profiles(id) on delete set null;
+
+alter table public.request_comments alter column author drop not null;
+alter table public.request_comments drop constraint if exists request_comments_author_fkey;
+alter table public.request_comments add constraint request_comments_author_fkey
+  foreign key (author) references public.profiles(id) on delete set null;
+
+alter table public.request_events drop constraint if exists request_events_actor_fkey;
+alter table public.request_events add constraint request_events_actor_fkey
+  foreign key (actor) references public.profiles(id) on delete set null;
 
