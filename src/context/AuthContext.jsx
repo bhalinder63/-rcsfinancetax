@@ -21,6 +21,8 @@ export function AuthProvider({ children }) {
       if (!newSession) {
         setProfile(null)
         setLoading(false)
+      } else {
+        setLoading(true)
       }
     })
     return () => subscription.unsubscribe()
