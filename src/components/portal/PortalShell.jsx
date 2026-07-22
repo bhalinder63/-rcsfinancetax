@@ -9,7 +9,7 @@ export default function PortalShell({ title, subtitle, children }) {
   return (
     <div className="min-h-dvh bg-night">
       <header className="border-b border-gold/25 bg-panel">
-        <div className="mx-auto flex w-full max-w-[1200px] items-center justify-between px-5 py-3 md:px-8">
+        <div className="mx-auto flex w-full max-w-[1440px] items-center justify-between px-5 py-3 md:px-8">
           <Link to="/" className="flex items-center gap-3">
             <img src={logoIcon} alt="RCS crest" className="h-10 w-auto" />
             <img src={logoWordmark} alt="RCS Finance & Tax Experts" className="hidden h-7 w-auto md:block" />
@@ -51,7 +51,7 @@ export default function PortalShell({ title, subtitle, children }) {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-[1200px] px-5 py-8 md:px-8 md:py-10">
+      <main className="mx-auto w-full max-w-[1440px] px-5 py-8 md:px-8 md:py-10">
         <div className="mb-8">
           <h1 className="font-display text-[26px] font-bold text-ivory md:text-[30px]">{title}</h1>
           {subtitle && <p className="mt-1 text-[15px] text-muted-2">{subtitle}</p>}
