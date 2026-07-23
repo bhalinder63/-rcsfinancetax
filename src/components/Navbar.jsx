@@ -42,7 +42,14 @@ export default function Navbar({ onEnquiry }) {
       }`}
     >
       <div className="mx-auto flex w-full max-w-[1440px] items-center justify-between px-5 py-3 md:px-12 md:py-3.5">
-        <a href="#home" className="flex items-center gap-3.5">
+        <a
+          href="/"
+          onClick={(e) => {
+            e.preventDefault()
+            window.scrollTo({ top: 0, behavior: 'smooth' })
+          }}
+          className="flex items-center gap-3.5"
+        >
           <img src={logoIcon} alt="RCS crest" width="490" height="512" className="h-[42px] w-auto md:h-[54px]" />
           <img src={logoWordmark} alt="RCS Finance & Tax Experts" width="752" height="105" className="h-[30px] w-auto md:h-10" />
         </a>
