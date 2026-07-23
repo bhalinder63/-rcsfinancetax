@@ -5,7 +5,7 @@ import logoWordmark from '../assets/rcslogo.png'
 
 export default function Footer() {
   return (
-    <footer id="contact" className="border-t border-gold/25 bg-panel px-5 pt-10 md:px-12 md:pt-12 lg:px-[72px] lg:pt-14">
+    <footer id="contact" className="scroll-mt-20 border-t border-gold/25 bg-panel px-5 pt-10 md:scroll-mt-32 md:px-12 md:pt-12 lg:px-[72px] lg:pt-14">
       <div className="mx-auto w-full max-w-[1440px]">
       <div className="grid gap-8 pb-12 md:grid-cols-2 md:gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
         <Reveal className="flex flex-col gap-4">

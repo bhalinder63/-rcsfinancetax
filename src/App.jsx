@@ -21,8 +21,10 @@ export default function App() {
 
   return (
     <>
-      <Topbar />
-      <Navbar onEnquiry={openEnquiry} />
+      <div className="sticky top-0 z-50">
+        <Topbar />
+        <Navbar onEnquiry={openEnquiry} />
+      </div>
       <main>
         <Hero onEnquiry={openEnquiry} />
         <TrustedBy />

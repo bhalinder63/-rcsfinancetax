@@ -6,7 +6,7 @@ export default function WhyRcs({ onEnquiry }) {
   return (
     <section
       id="why"
-      className="bg-night px-5 pb-14 md:px-12 md:pb-16 lg:px-[72px] lg:pb-20"
+      className="scroll-mt-20 bg-night px-5 pb-14 md:scroll-mt-32 md:px-12 md:pb-16 lg:px-[72px] lg:pb-20"
     >
       <div className="mx-auto grid w-full max-w-[1440px] gap-6 lg:grid-cols-[1.2fr_1fr]">
       <Reveal className="rounded-xl border border-gold/22 bg-panel px-6 py-[30px] md:px-11 md:py-[42px]">
@@ -29,7 +29,7 @@ export default function WhyRcs({ onEnquiry }) {
       <Reveal
         delay={120}
         id="about"
-        className="flex flex-col justify-center gap-4 rounded-xl border border-gold/45 bg-linear-150 from-[#191307] from-0% to-[#0d0a05] to-70% px-6 py-[30px] shadow-[inset_0_1px_0_rgba(212,175,55,.25)] md:px-11 md:py-[42px]"
+        className="flex scroll-mt-20 flex-col justify-center gap-4 rounded-xl border border-gold/45 bg-linear-150 from-[#191307] from-0% to-[#0d0a05] to-70% px-6 py-[30px] shadow-[inset_0_1px_0_rgba(212,175,55,.25)] md:scroll-mt-32 md:px-11 md:py-[42px]"
       >
         <h2 className="font-display text-[30px] font-bold text-gold-light">Need Expert Guidance?</h2>
         <p className="text-[16.5px] leading-relaxed text-sand [text-wrap:pretty]">

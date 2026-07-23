@@ -90,7 +90,7 @@ export default function Hero({ onEnquiry }) {
   return (
     <section
       id="home"
-      className="relative border-b border-gold/20 bg-[radial-gradient(1100px_620px_at_78%_30%,#141a2a_0%,#0a0d14_55%,#07090d_100%)] px-5 pb-11 pt-12 md:px-12 md:pb-14 md:pt-16 lg:px-[72px] lg:pb-[72px] lg:pt-[84px]"
+      className="relative scroll-mt-20 border-b border-gold/20 bg-[radial-gradient(1100px_620px_at_78%_30%,#141a2a_0%,#0a0d14_55%,#07090d_100%)] px-5 pb-11 pt-12 md:scroll-mt-32 md:px-12 md:pb-14 md:pt-16 lg:px-[72px] lg:pb-[72px] lg:pt-[84px]"
     >
       <div className="mx-auto grid w-full max-w-[1440px] items-center gap-6 md:gap-10 lg:grid-cols-[1.15fr_1fr]">
         <div>

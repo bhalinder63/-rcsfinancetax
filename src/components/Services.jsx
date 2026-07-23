@@ -4,7 +4,7 @@ import Reveal from './Reveal.jsx'
 
 export default function Services({ onEnquiry }) {
   return (
-    <section id="services" className="bg-night px-5 pb-12 pt-14 md:px-12 md:pb-14 md:pt-16 lg:px-[72px] lg:pb-[72px] lg:pt-20">
+    <section id="services" className="scroll-mt-20 bg-night px-5 pb-12 pt-14 md:scroll-mt-32 md:px-12 md:pb-14 md:pt-16 lg:px-[72px] lg:pb-[72px] lg:pt-20">
       <div className="mx-auto w-full max-w-[1440px]">
         <Reveal>
           <SectionHeading

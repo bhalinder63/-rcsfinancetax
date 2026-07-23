@@ -35,7 +35,7 @@ export default function Navbar({ onEnquiry }) {
 
   return (
     <header
-      className={`sticky top-0 z-50 border-b backdrop-blur-[10px] transition-[background-color,border-color,box-shadow] duration-300 ${
+      className={`border-b backdrop-blur-[10px] transition-[background-color,border-color,box-shadow] duration-300 ${
         scrolled
           ? 'border-gold/40 bg-[rgba(7,9,13,.99)] shadow-[0_10px_30px_rgba(0,0,0,.45)]'
           : 'border-gold/25 bg-[rgba(9,11,16,.96)]'
