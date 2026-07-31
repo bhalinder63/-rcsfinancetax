@@ -31,6 +31,8 @@ There is no lint, format, or test setup — none of `eslint`, `prettier`, `vites
 
 The enquiry form (`EnquiryModal`) is available from the public page and writes to the `enquiries` table for the admin inbox — it is intentionally separate from the WhatsApp floating button, which just opens a `wa.me` link.
 
+`Topbar` and `Navbar` render together inside one `sticky top-0` wrapper in `App.jsx` (not individually sticky) so the contact-info strip stays visible instead of scrolling away. Nav links anchor-scroll to section ids (`#home`, `#about`, `#services`, `#why`, `#contact`) — each target section carries `scroll-mt-20 md:scroll-mt-32` so it clears the combined Topbar+Navbar height instead of tucking its heading underneath. If that combined header's height changes, these scroll-margin values need to change with it.
+
 ### Auth & data (Supabase)
 
 - `src/lib/supabase.js` creates the client from `VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY` (with hardcoded fallbacks to the live project — the anon/publishable key is safe to ship, access is governed by RLS). It also holds shared helpers: `openDocument` (signed URL for private storage) and `uploadRequestDocuments` (uploads into `{client_id}/{request_id}/...` and inserts a `documents` row).
@@ -38,6 +40,7 @@ The enquiry form (`EnquiryModal`) is available from the public page and writes t
 - **Schema of record: `supabase/setup.sql`** — idempotent (uses `create table if not exists`, `drop policy if exists`, etc.), safe to re-run wholesale in the Supabase SQL Editor. It's the union of every phase to date (profiles/requests/documents, timeline events + comments, enquiries inbox). `supabase/enquiries.sql` and `supabase/phase2b.sql` are the original incremental migration files for two of those phases, kept for history — don't treat them as separate things to apply; `setup.sql` already includes their content.
 - The Supabase project was created with "Automatically expose new tables" **disabled**. Every new table needs an explicit `grant ... to authenticated` in addition to RLS policies, or PostgREST returns `42501 permission denied`.
 - `role` changes are blocked at the database level (`protect_role` trigger) and a new signup always gets `role = 'client'` via the `handle_new_user` trigger — admin promotion is a manual SQL update.
+- Deleting a user (`auth.users`) must never be blocked by their history: `documents.uploaded_by`, `request_comments.author`, and `request_events.actor` all use `on delete set null` into `profiles(id)` rather than the Postgres default `NO ACTION`. Any new table that references `profiles(id)` should follow the same pattern — otherwise deleting a user who's touched that table fails with a generic "Database error deleting user" in the Supabase dashboard.
 - Realtime is enabled (`supabase_realtime` publication) on `requests`, `documents`, `request_comments`, and `enquiries` — portal/admin pages subscribe via `supabase.channel(...).on('postgres_changes', ...)` to stay live without polling (see `Admin.jsx`'s `loadRequests` + channel subscription for the pattern).
 - Private file storage: bucket `documents`, non-public, path convention `{client_id}/{request_id}/{timestamp}_{sanitized filename}` — the first path segment is what RLS storage policies check against `auth.uid()`.
 
